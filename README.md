@@ -8,7 +8,7 @@ Lean 4: Newton–Gauss, Bodenmiller, the Miquel point, the Steiner circle and th
 namespace). The paper states each theorem in prose with every hypothesis and reports the verification
 summarised below.
 
-**Status:** all statements proved, no `sorry`. `gate.sh` checks **35** named declarations.
+**Status:** all statements proved, no `sorry`. `gate.sh` checks **81** named declarations.
 
 ## Main statements
 
@@ -26,14 +26,18 @@ summarised below.
 Every theorem assumes only that the four lines are in general position (`GenPos`: nonzero directions,
 no two parallel, no three concurrent). Read the Lean statement for the exact form.
 
+## Layers 14 and 15
+
+`QuadNewton/L14Newton.lean` (Layer 14) restates the main theorems using only Mathlib definitions, without this repository's own definitions, proves the restatements from the library, and gives explicit configurations showing that the hypotheses can be satisfied (35 declarations). `QuadNewton/L15Classical.lean` (Layer 15, namespace `QuadNewton.Classical`) reproduces verbatim classical definitions and statements of E1–E4 (Newton–Gauss line, orthocentre line, Gauss–Bodenmiller, perpendicularity) that another AI model wrote from textbook statements without seeing this code; its `cov_*` theorems prove each of them from this development (11 declarations, including the two construction obligations). None of the writer's statements turned out to be false. `radical_eq_line` and `cross_iff_dot` are new lemmas showing that the radical locus of two diameter circles is exactly the orthocentre line. All of these declarations are in the gate's `REQUIRED` list.
+
 ## Verification
 
-`./gate.sh` builds the library and runs `#print axioms` on the 35 declarations in its `REQUIRED`
+`./gate.sh` builds the library and runs `#print axioms` on the 81 declarations in its `REQUIRED`
 list. It fails if a source file contains `sorry`, `admit`, `native_decide`, `axiom`, `#eval`, `run_cmd`,
 `set_option`, a macro or syntax extension; if the build fails; or if any listed declaration depends on
 anything other than `propext`, `Classical.choice` and `Quot.sound`.
 
-Expected output: `PASS (35 declarations, standard axioms only)`. Checked on x86-64 Linux and arm64
+Expected output: `PASS (81 declarations, standard axioms only)`. Checked on x86-64 Linux and arm64
 macOS at the pinned Mathlib revision.
 
 `bash tests/tamper.sh` plants defects in scratch copies (ax2line, evalfake, falsehyp, macro, sorry, wrap) and checks that the gate
